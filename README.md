@@ -7,7 +7,7 @@ daemon, the virus and malware scanner.
 Role Variables
 --------------
 
-See [defaults/main.yml](tree/masters/defaults/main.yml).
+See [defaults/main.yml](defaults/main.yml).
 
 Example Playbook
 ----------------
