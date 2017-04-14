@@ -1,0 +1,14 @@
+---
+
+- name: Reload systemd
+  command: systemctl daemon-reload
+
+- name: Restart clamav-daemon socket
+  service:
+    name: clamav-daemon.socket
+    state: restarted
+
+- name: Restart clamav-daemon
+  service:
+    name: clamav-daemon
+    state: restarted

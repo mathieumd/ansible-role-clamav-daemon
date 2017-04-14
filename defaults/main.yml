@@ -1,0 +1,28 @@
+---
+
+clamav_packages:
+  - clamav-daemon
+
+# If you want unofficial signatures, remove it's name from here and add it into
+# "clamav_packages".
+clamav_packages_remove:
+  - clamav-unofficial-sigs
+
+# Choose "socket" (default) or "tcp":
+clamav_listen_type: socket
+# And set the according variables:
+clamav_socket: /var/run/clamav/clamd.ctl
+clamav_tcp_ip: "{{ansible_default_ipv4.address}}"
+clamav_tcp_port: 3310
+
+clamav_user: clamav
+clamav_group: clamav
+
+clamav_additional_groups: []
+# clamav_additional_groups:
+#   - Debian-exim
+
+clamav_systemd_socket_extend_template: "systemd-socket_extend.conf"
+clamav_clamdconf_template: "clamd.conf.j2"
+clamav_freshclamconf_template: "freshclam.conf.j2"
+

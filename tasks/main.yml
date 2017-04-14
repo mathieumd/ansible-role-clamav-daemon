@@ -1,0 +1,68 @@
+---
+
+# FIXME: Is it really necessary?
+# - name: ClamAV | Prepare debconf
+#   debconf:
+#     name: clamav-daemon
+#     question: clamav-daemon/debconf
+#     value: false
+#     vtype: boolean
+
+- name: ClamAV | Install packages
+  apt:
+    name: "{{item}}"
+    state: present
+  with_items: "{{clamav_packages}}"
+
+- name: ClamAV | Packages to remove
+  apt:
+    name: "{{item}}"
+    state: absent
+    purge: yes
+  with_items: "{{clamav_packages_remove}}"
+  notify: Restart clamav-daemon
+
+- name: ClamAV | Remove packaging Systemd socket
+  file:
+    path: /etc/systemd/system/clamav-daemon.socket.d/extend.conf
+    state: absent
+  notify:
+    - Reload systemd
+    - Restart clamav-daemon socket
+    - Restart clamav-daemon
+
+- name: ClamAV | Configure Systemd socket
+  template:
+    src: "{{clamav_systemd_socket_extend_template}}"
+    dest: /etc/systemd/system/clamav-daemon.socket.d/extend-ansible.conf
+  notify:
+    - Reload systemd
+    - Restart clamav-daemon socket
+    - Restart clamav-daemon
+
+- name: ClamAV | Configure clamd.conf
+  template:
+    src: "{{clamav_clamdconf_template}}"
+    dest: /etc/clamav/clamd.conf
+  notify: Restart clamav-daemon
+
+- name: ClamAV | Configure freshclam.conf
+  template:
+    src: "{{clamav_freshclamconf_template}}"
+    dest: /etc/clamav/freshclam.conf
+  notify: Restart clamav-daemon
+
+- name: ClamAV | Add user to additional groups
+  user:
+    name: clamav
+    groups: "{{clamav_additional_groups | join(',')}}"
+    append: yes
+  when: clamav_additional_groups is defined
+  notify: Restart clamav-daemon
+
+- name: ClamAV | Enable at boot
+  service:
+    name: clamav-daemon
+    enabled: yes
+    state: started
+
