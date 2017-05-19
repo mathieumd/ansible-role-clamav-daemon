@@ -15,6 +15,13 @@ clamav_socket: /var/run/clamav/clamd.ctl
 clamav_tcp_ip: "{{ansible_default_ipv4.address}}"
 clamav_tcp_port: 3310
 
+# If you need any other configuration files, you may use this:
+# clamav_other_conf_files:
+#   - file: /etc/clamav-unofficial-sigs.conf.d/local.conf
+#     content: |
+#       si_dbs=""
+#       mbl_dbs=""
+
 clamav_user: clamav
 clamav_group: clamav
 

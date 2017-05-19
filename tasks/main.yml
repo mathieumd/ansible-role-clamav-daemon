@@ -52,6 +52,17 @@
     dest: /etc/clamav/freshclam.conf
   notify: Restart clamav-daemon
 
+- name: ClamAV | Copy other conf-files
+  copy:
+    dest: "{{item.file}}"
+    content: "{{item.content}}"
+    mode: 0644
+    owner: root
+    group: root
+  with_items: "{{clamav_other_conf_files}}"
+  when: clamav_other_conf_files is defined
+  notify: Restart clamav-daemon
+
 - name: ClamAV | Add user to additional groups
   user:
     name: clamav
